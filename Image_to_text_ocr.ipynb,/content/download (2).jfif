@@ -1,0 +1,600 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Smart1mushtak/diabetic/blob/main/Image_to_text_ocr.ipynb%2C/content/download%20(2).jfif\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 5,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "aQv7olZt8q0H",
+        "outputId": "c6a6b6db-ca3f-4119-a1ba-1037481173b1"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: opencv-python in /usr/local/lib/python3.10/dist-packages (4.8.0.76)\n",
+            "Requirement already satisfied: numpy>=1.21.2 in /usr/local/lib/python3.10/dist-packages (from opencv-python) (1.23.5)\n",
+            "Collecting pytesseract\n",
+            "  Downloading pytesseract-0.3.10-py3-none-any.whl (14 kB)\n",
+            "Requirement already satisfied: packaging>=21.3 in /usr/local/lib/python3.10/dist-packages (from pytesseract) (23.2)\n",
+            "Requirement already satisfied: Pillow>=8.0.0 in /usr/local/lib/python3.10/dist-packages (from pytesseract) (9.4.0)\n",
+            "Installing collected packages: pytesseract\n",
+            "Successfully installed pytesseract-0.3.10\n"
+          ]
+        }
+      ],
+      "source": [
+        "!pip install opencv-python\n",
+        "!pip install pytesseract"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 6,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "AmO3InrfItcJ",
+        "outputId": "542097cc-d363-4bce-a66d-e67c7cf4460e"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Reading package lists... Done\n",
+            "Building dependency tree... Done\n",
+            "Reading state information... Done\n",
+            "The following additional packages will be installed:\n",
+            "  tesseract-ocr-eng tesseract-ocr-osd\n",
+            "The following NEW packages will be installed:\n",
+            "  tesseract-ocr tesseract-ocr-eng tesseract-ocr-osd\n",
+            "0 upgraded, 3 newly installed, 0 to remove and 23 not upgraded.\n",
+            "Need to get 4,816 kB of archives.\n",
+            "After this operation, 15.6 MB of additional disk space will be used.\n",
+            "Get:1 http://archive.ubuntu.com/ubuntu jammy/universe amd64 tesseract-ocr-eng all 1:4.00~git30-7274cfa-1.1 [1,591 kB]\n",
+            "Get:2 http://archive.ubuntu.com/ubuntu jammy/universe amd64 tesseract-ocr-osd all 1:4.00~git30-7274cfa-1.1 [2,990 kB]\n",
+            "Get:3 http://archive.ubuntu.com/ubuntu jammy/universe amd64 tesseract-ocr amd64 4.1.1-2.1build1 [236 kB]\n",
+            "Fetched 4,816 kB in 3s (1,691 kB/s)\n",
+            "Selecting previously unselected package tesseract-ocr-eng.\n",
+            "(Reading database ... 120903 files and directories currently installed.)\n",
+            "Preparing to unpack .../tesseract-ocr-eng_1%3a4.00~git30-7274cfa-1.1_all.deb ...\n",
+            "Unpacking tesseract-ocr-eng (1:4.00~git30-7274cfa-1.1) ...\n",
+            "Selecting previously unselected package tesseract-ocr-osd.\n",
+            "Preparing to unpack .../tesseract-ocr-osd_1%3a4.00~git30-7274cfa-1.1_all.deb ...\n",
+            "Unpacking tesseract-ocr-osd (1:4.00~git30-7274cfa-1.1) ...\n",
+            "Selecting previously unselected package tesseract-ocr.\n",
+            "Preparing to unpack .../tesseract-ocr_4.1.1-2.1build1_amd64.deb ...\n",
+            "Unpacking tesseract-ocr (4.1.1-2.1build1) ...\n",
+            "Setting up tesseract-ocr-eng (1:4.00~git30-7274cfa-1.1) ...\n",
+            "Setting up tesseract-ocr-osd (1:4.00~git30-7274cfa-1.1) ...\n",
+            "Setting up tesseract-ocr (4.1.1-2.1build1) ...\n",
+            "Processing triggers for man-db (2.10.2-1) ...\n"
+          ]
+        }
+      ],
+      "source": [
+        "!apt install tesseract-ocr"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!apt-get install tesseract-ocr-mar"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fHmhT7VHUdJu",
+        "outputId": "a5edf266-80cd-4e52-be6e-84912239d4ef"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Reading package lists... Done\n",
+            "Building dependency tree... Done\n",
+            "Reading state information... Done\n",
+            "The following NEW packages will be installed:\n",
+            "  tesseract-ocr-mar\n",
+            "0 upgraded, 1 newly installed, 0 to remove and 23 not upgraded.\n",
+            "Need to get 862 kB of archives.\n",
+            "After this operation, 2,133 kB of additional disk space will be used.\n",
+            "Get:1 http://archive.ubuntu.com/ubuntu jammy/universe amd64 tesseract-ocr-mar all 1:4.00~git30-7274cfa-1.1 [862 kB]\n",
+            "Fetched 862 kB in 2s (422 kB/s)\n",
+            "Selecting previously unselected package tesseract-ocr-mar.\n",
+            "(Reading database ... 120950 files and directories currently installed.)\n",
+            "Preparing to unpack .../tesseract-ocr-mar_1%3a4.00~git30-7274cfa-1.1_all.deb ...\n",
+            "Unpacking tesseract-ocr-mar (1:4.00~git30-7274cfa-1.1) ...\n",
+            "Setting up tesseract-ocr-mar (1:4.00~git30-7274cfa-1.1) ...\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 7,
+      "metadata": {
+        "id": "LQKD5mqyDmqx",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "75c4d9a4-bafa-4853-e7ba-f7ad17af60ed"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "/usr/bin/tesseract\n"
+          ]
+        }
+      ],
+      "source": [
+        "!which tesseract"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "id": "nT_1GJDZGm7L",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "1c883bbf-4886-4cc5-9a24-88e39107e569"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "[/content/tessdata.zip]\n",
+            "  End-of-central-directory signature not found.  Either this file is not\n",
+            "  a zipfile, or it constitutes one disk of a multi-part archive.  In the\n",
+            "  latter case the central directory and zipfile comment will be found on\n",
+            "  the last disk(s) of this archive.\n",
+            "unzip:  cannot find zipfile directory in one of /content/tessdata.zip or\n",
+            "        /content/tessdata.zip.zip, and cannot find /content/tessdata.zip.ZIP, period.\n"
+          ]
+        }
+      ],
+      "source": [
+        "!unzip -q /content/tessdata.zip"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "id": "6Z8Fq5G7G4nx"
+      },
+      "outputs": [],
+      "source": [
+        "!cp -r /content/tessdata* /usr/"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 8,
+      "metadata": {
+        "id": "W0MRXLE19Lks"
+      },
+      "outputs": [],
+      "source": [
+        "import pytesseract\n",
+        "\n",
+        "pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "xBe0_ZVo9U8l"
+      },
+      "outputs": [],
+      "source": [
+        "import cv2\n",
+        "import pytesseract"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 10,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "sJlegHw29lF3",
+        "outputId": "bc8797b3-47a9-4c78-d41d-7194cacef161"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "OCR Result:\n",
+            "@ Generative Al is a type\n",
+            "of artificial\n",
+            "intelligence (Al) that\n",
+            "can create new\n",
+            "content, such as text,\n",
+            "images, audio, and\n",
+            "video. It does this by\n",
+            "learning from existing\n",
+            "data and then using\n",
+            "that knowledge to\n",
+            "generate new and\n",
+            "unique outputs.\n"
+          ]
+        }
+      ],
+      "source": [
+        "from PIL import Image\n",
+        "import pytesseract\n",
+        "\n",
+        "# Open an image file\n",
+        "img = Image.open('/content/WhatsApp Image 2023-12-14 at 10.09.18 PM.jpeg')  # Replace with the path to your image file\n",
+        "\n",
+        "# Perform OCR using pytesseract\n",
+        "text = pytesseract.image_to_string(img)\n",
+        "\n",
+        "# Print the OCR result\n",
+        "print('OCR Result:')\n",
+        "print(text.strip())\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 14,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-WhtcAWUHs0N",
+        "outputId": "1bff57b2-ee23-4b71-f647-57506e569808"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "OCR Result:\n",
+            "बिद्यी ककल, सामान्य प्रशासन विभाग१, जिल्हा परिषद, सोलापूर\n",
+            "ई- पेल :00९०॥॥॥,५०18]॥॥॥॥८१॥॥1७11.९०॥1\n",
+            "दूरध्वनी क्र. ०९१७-\n",
+            "\n",
+            " \n",
+            "\n",
+            "५२५७०३५\n",
+            "भत्थेत पहत्वाच/१परणपेप्र २१\n",
+            "\n",
+            "जाक्क जिपसा/साप्रवि-१/बिश्री क्षा 27२०२३\n",
+            "न्थाथालधीन परकर\n",
+            "\n",
+            "सोलापूर दिनांक :- ०१.१४,२०२३\n",
+            "प्रति, री\n",
+            "\n",
+            "खरातेप्रपुख ( सर्व), टेयारीळ्य शिश्याठा\n",
+            "\n",
+            "जिल्हा परिषद, सोलापूर,\n",
+            "\n",
+            "बिषय:- प्रलंबित न्यायालयीन प्रकरणांत प्रतिज्ञापत्र दाखल करणेबाबत,\n",
+            "\n",
+            " \n",
+            " \n",
+            "\n",
+            "संदर्भ :- १. या कार्यालयाकडी\n",
+            "२.या कार्यालयाक'\n",
+            "\n",
+            "उपरोक्‍त विषयास अनुसरून आपणांस कळविण्यात येते की, संदर्भीय पत्रान्वये आपणांस सोलापूर\n",
+            "जिल्ह्या परि'\n",
+            "\n",
+            " \n",
+            "\n",
+            "न्यायालयीन प्रकरणांबाबत दिनांक १३/१०/२०२३ रोजी मा. विभागीय आयुक्‍त,\n",
+            "प्रणे ब्रिाग, पुणे यांच्या कार्यालयात आढावा वैटक आयोजीत केल्याचे व त्या अनुषंगाने माहिती सादर\n",
+            "करणेबाबत कळविण्यात आलेले\n",
+            "\n",
+            " \n",
+            "\n",
+            "] पंरतृ याबाबतची माहिती आपणांकडून प्राप्त झालेली नाही. सदरच्या\n",
+            "आढावा बैटकीमध्ये मागितलेल्या माहितीपेकी मुद्रा क्रं. २ मध्ये दिनांक ३१ ऑक्टोवर २०२३ अखेर प्रंलवित\n",
+            "न्यायालयीन प्रकरणासंदर्भात मे. उच्च न्यायालय, मुंबई/ छत्रपती संभाजीनगर/ नागपूर या टिकाणी अदयाप\n",
+            "शपथपत्र दाखल केलेले नाही अशा प्रकरणांची प्रकरणनिहाय यादी सादर करणेबाबत कळविण्यात आलेले\n",
+            "\n",
+            "होते. सदरची माहिती खालील नमुन्यात सादर करणेबाबत आपणांस कळविण्यात आलेले होते.\n",
+            "\n",
+            "१)माहे ऑक्टोबर २०२३ अखेर प्रंलवित न्यायालयीन प्रकरणांचा तपशील\n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "   \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            "विभागाचे नांव :-\n",
+            "तपशील मा. न्यायालयाचा तपर्शाल ]\n",
+            "क्र मा. मा. उच्च मा. मा. मा. मा. एकूण\n",
+            "सर्वोच्च | न्यायालय | जिल्हा | कामगार | औद्दोगिक । तालुका\n",
+            "“ न्यायालय न्यायालय | न्यायालय | न्यायालय | न्यायालय |\n",
+            "१_ | एकूण प्रलंबित प्रकरणे | ण |]\n",
+            "२. | प्रतिज्ञापत्र सादर केलेली प्रकरणे\n",
+            "३ । प्रतिज्ञापत्र सादर न केलेली | _ |\n",
+            "प्रकरणे ञ ]\n",
+            "1345\n",
+            "1 ॥८८ य\n",
+            "\n",
+            " \n",
+            "\n",
+            "१. (१५७\n",
+            "\n",
+            "ऑफर कज. प्र.अ.\n"
+          ]
+        }
+      ],
+      "source": [
+        "img = Image.open('/content/WhatsApp Image 2023-12-14 at 10.17.18 PM.jpeg')  # Replace with the path to your image file\n",
+        "\n",
+        "# Perform OCR using pytesseract\n",
+        "text = pytesseract.image_to_string(img,lang='mar')\n",
+        "\n",
+        "# Print the OCR result\n",
+        "print('OCR Result:')\n",
+        "print(text.strip())"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "t=str(text)"
+      ],
+      "metadata": {
+        "id": "Dx1bUVUWU1Ir"
+      },
+      "execution_count": 15,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import re"
+      ],
+      "metadata": {
+        "id": "vXesnbyEVMJq"
+      },
+      "execution_count": 18,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "res=re.findall('[बिषय].',t)"
+      ],
+      "metadata": {
+        "id": "0jX28Bm3VQCR"
+      },
+      "execution_count": 19,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(res)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "z-E-6_ZbVraV",
+        "outputId": "be70ed71-bd11-4a94-bedd-f02edfaf758c"
+      },
+      "execution_count": 21,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['बि', 'यी', 'य ', 'िभ', 'िल', 'िष', 'िप', 'ि-', 'बि', 'षा', 'िन', 'ि,', 'या', 'य ', 'िश', 'या', 'िल', 'िष', 'बि', 'षय', 'बि', 'या', 'या', 'यी', 'िज', 'बा', 'बत', 'या', 'या', 'या', 'या', 'या', 'या', 'िष', 'या', 'िण', 'या', 'ये', 'य ', 'ये', 'िल', 'या', \"ि'\", 'या', 'या', 'यी', 'बा', 'बत', 'िन', 'िभ', 'य ', 'यु', 'ब्', 'िा', 'या', 'या', 'या', 'या', 'यो', 'या', 'या', 'षं', 'ित', 'बा', 'बत', 'िण', 'या', 'या', 'बा', 'बत', 'ित', 'या', 'बै', 'ये', 'ित', 'या', 'ित', 'ये', 'िन', 'ित', 'या', 'या', 'यी', 'या', 'या', 'य,', 'बई', 'या', 'िक', 'या', 'िह', 'य ', 'या', 'बा', 'बत', 'िण', 'या', 'ित', 'या', 'बा', 'बत', 'िण', 'या', 'बर', 'ित', 'या', 'या', 'यी', 'िभ', 'या', 'या', 'या', 'या', 'या', 'य ', 'िल', 'िक', 'या', 'या', 'य ', 'या', 'या', 'य ', 'या', 'या', 'य ', 'या', 'या', 'य ', 'या', 'या', 'य ', 'बि', 'िज', 'िज']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 17,
+      "metadata": {
+        "id": "qQwevb2bJ4dy",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "2e8f9082-5b5b-40b2-c1a0-43129f898bb9"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "बिद्यी ककल, सामान्य प्रशासन विभाग१, जिल्हा परिषद, सोलापूर\n",
+            "ई- पेल :00९०॥॥॥,५०18]॥॥॥॥८१॥॥1७11.९०॥1\n",
+            "दूरध्वनी क्र. ०९१७-\n",
+            "\n",
+            " \n",
+            "\n",
+            "५२५७०३५\n",
+            "भत्थेत पहत्वाच/१परणपेप्र २१\n",
+            "\n",
+            "जाक्क जिपसा/साप्रवि-१/बिश्री क्षा 27२०२३\n",
+            "न्थाथालधीन परकर\n",
+            "\n",
+            "सोलापूर दिनांक :- ०१.१४,२०२३\n",
+            "प्रति, री\n",
+            "\n",
+            "खरातेप्रपुख ( सर्व), टेयारीळ्य शिश्याठा\n",
+            "\n",
+            "जिल्हा परिषद, सोलापूर,\n",
+            "\n",
+            "बिषय:- प्रलंबित न्यायालयीन प्रकरणांत प्रतिज्ञापत्र दाखल करणेबाबत,\n",
+            "\n",
+            " \n",
+            " \n",
+            "\n",
+            "संदर्भ :- १. या कार्यालयाकडी\n",
+            "२.या कार्यालयाक'\n",
+            "\n",
+            "उपरोक्‍त विषयास अनुसरून आपणांस कळविण्यात येते की, संदर्भीय पत्रान्वये आपणांस सोलापूर\n",
+            "जिल्ह्या परि'\n",
+            "\n",
+            " \n",
+            "\n",
+            "न्यायालयीन प्रकरणांबाबत दिनांक १३/१०/२०२३ रोजी मा. विभागीय आयुक्‍त,\n",
+            "प्रणे ब्रिाग, पुणे यांच्या कार्यालयात आढावा वैटक आयोजीत केल्याचे व त्या अनुषंगाने माहिती सादर\n",
+            "करणेबाबत कळविण्यात आलेले\n",
+            "\n",
+            " \n",
+            "\n",
+            "] पंरतृ याबाबतची माहिती आपणांकडून प्राप्त झालेली नाही. सदरच्या\n",
+            "आढावा बैटकीमध्ये मागितलेल्या माहितीपेकी मुद्रा क्रं. २ मध्ये दिनांक ३१ ऑक्टोवर २०२३ अखेर प्रंलवित\n",
+            "न्यायालयीन प्रकरणासंदर्भात मे. उच्च न्यायालय, मुंबई/ छत्रपती संभाजीनगर/ नागपूर या टिकाणी अदयाप\n",
+            "शपथपत्र दाखल केलेले नाही अशा प्रकरणांची प्रकरणनिहाय यादी सादर करणेबाबत कळविण्यात आलेले\n",
+            "\n",
+            "होते. सदरची माहिती खालील नमुन्यात सादर करणेबाबत आपणांस कळविण्यात आलेले होते.\n",
+            "\n",
+            "१)माहे ऑक्टोबर २०२३ अखेर प्रंलवित न्यायालयीन प्रकरणांचा तपशील\n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "   \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            " \n",
+            "\n",
+            "विभागाचे नांव :-\n",
+            "तपशील मा. न्यायालयाचा तपर्शाल ]\n",
+            "क्र मा. मा. उच्च मा. मा. मा. मा. एकूण\n",
+            "सर्वोच्च | न्यायालय | जिल्हा | कामगार | औद्दोगिक । तालुका\n",
+            "“ न्यायालय न्यायालय | न्यायालय | न्यायालय | न्यायालय |\n",
+            "१_ | एकूण प्रलंबित प्रकरणे | ण |]\n",
+            "२. | प्रतिज्ञापत्र सादर केलेली प्रकरणे\n",
+            "३ । प्रतिज्ञापत्र सादर न केलेली | _ |\n",
+            "प्रकरणे ञ ]\n",
+            "1345\n",
+            "1 ॥८८ य\n",
+            "\n",
+            " \n",
+            "\n",
+            "१. (१५७\n",
+            "\n",
+            "ऑफर कज. प्र.अ.\n",
+            "\n",
+            " \n",
+            "\f\n"
+          ]
+        }
+      ],
+      "source": [
+        "print(t)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "p5TrB4OqU8hH"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMDM+N7ibhFpJeU5oVLVDVt",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
